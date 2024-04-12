@@ -64,7 +64,7 @@ def multiple_pot(x, y, charges_positions):
     return V_total
     
     
-def plot_charges(charges_positions, ax):
+def plot_charges(charges_positions, ax, text = True):
     """
     Plotea las cargas con circulos.     
     """
@@ -77,10 +77,11 @@ def plot_charges(charges_positions, ax):
             c = 'b'
             si = '+'
         ax.plot(x0, y0, 'o'+c, markersize = 10)
-        ax.text(x0-0.4, y0-.1, si + str(q) , color = 'w')
+        if text:
+            ax.text(x0-0.4, y0-.1, si + str(q) , color = 'w')
 
 
-def plot_streamlines(l, N, charges_positions, ax):
+def plot_streamlines(l, N, charges_positions, ax, fig, text = True, line_color = 'w'):
     """
     Plotea las lineas de campo y sups equipotenciales.
     params:
@@ -103,15 +104,15 @@ def plot_streamlines(l, N, charges_positions, ax):
             else:
                 pot[i][j]= -np.abs(p)**(1/10)
 
-    cp = ax.contourf(X, Y, pot, cmap = 'RdGy', vmin = -1, vmax = 1, levels = 50)
+    cp = ax.contourf(X, Y, pot, cmap = 'RdGy', vmin = pot.min()*.5, vmax = pot.max()*.5, levels = 50)
     cb = fig.colorbar(cp, ticks = [pot.min(), 0, pot.max()], fraction=0.046, pad=0.04)
 
 
     cb.ax.set_yticklabels(['Vmin', '0', 'Vmax'])
     ax.streamplot(X, Y, Ex, Ey, linewidth=1,
-                    density=2, arrowstyle='->', arrowsize=2, color = 'w')
+                    density=1, arrowstyle='->', arrowsize=2, color = line_color)
                     
-    plot_charges(charges_positions, ax)
+    plot_charges(charges_positions, ax, text)
     ax.set_xlim(-l, l)
     ax.set_ylim(-l, l)
     ax.set_aspect('equal')
